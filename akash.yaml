@@ -1,0 +1,54 @@
+---
+version: "2.0"
+
+services:
+  node:
+    image: noislabs/nois:0.0.5
+    env:
+      - BINARY_NAME=noisd
+      - CHAIN_ID=nois-testnet-000
+      - MONIKER=nois-validator-2
+      - DENOM=nois
+      - STAKE_DENOM=stake
+      - EXEC_MODE=validator
+      - MNEMONIC=mV2ZWFsIGNvbWUgcmlkZSBmb3J0dW5lIGFkbWl0IGJyb2tlbiBjbGljayB0b3dlciBhZGRyZXNzIGNlbnN1cyByYWRpbyBsZWN0dXJlIGxpY2Vuc2UgZ29vc2UgZmV2ZXIgZGVmeSBwYXRpZW50IHNpYmxpbmcgcXVhbGl0eSBzaWNrIGNhYmluIGluZG9vciBwcmludCB0eXBpY2FsCg==
+      - GENESIS_URL=https://raw.githubusercontent.com/noislabs/testnets/main/nois-testnet-000/genesis.json
+      - REMOTE_RPC_NODE=http://kuq08eb6bda3151gmrln3prccg.ingress.europlots.com:80
+      - PERSISTENT_PEERS=7ddf3c60f9ed086eee142ffae23c490d9fc738ca@provider.europlots.com:32637
+    expose:
+      - port: 26657
+        as: 80
+        to:
+          - global: true
+      - port: 26656
+        to:
+          - global: true
+
+profiles:
+  compute:
+    node:
+      resources:
+        cpu:
+          units: 2
+        memory:
+          size: 4Gi
+        storage:
+          size: 20Gi
+  placement:
+    dcloud:
+      attributes:
+        host: akash
+      signedBy:
+        anyOf:
+          - akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63
+      pricing:
+        node:
+          denom: uakt
+          amount: 10000
+
+deployment:
+  node:
+    dcloud:
+      profile: node
+      count: 1
+
