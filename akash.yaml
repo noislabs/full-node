@@ -3,7 +3,7 @@ version: "2.0"
 
 services:
   node:
-    image: noislabs/nois:0.0.5
+    image: noislabs/nois:0.0.10
     env:
       - BINARY_NAME=noisd
       - CHAIN_ID=nois-testnet-000
@@ -11,7 +11,8 @@ services:
       - DENOM=nois
       - STAKE_DENOM=stake
       - EXEC_MODE=validator
-      - MNEMONIC=mV2ZWFsIGNvbWUgcmlkZSBmb3J0dW5lIGFkbWl0IGJyb2tlbiBjbGljayB0b3dlciBhZGRyZXNzIGNlbnN1cyByYWRpbyBsZWN0dXJlIGxpY2Vuc2UgZ29vc2UgZmV2ZXIgZGVmeSBwYXRpZW50IHNpYmxpbmcgcXVhbGl0eSBzaWNrIGNhYmluIGluZG9vciBwcmludCB0eXBpY2FsCg==
+      - MNEMONIC=cmV2ZWFsIGNvbWUgcmlkZSBmb3J0dW5lIGFkbWl0IGJyb2tlbiBjbGljayB0b3dlciBhZGRyZXNzIGNlbnN1cyByYWRpbyBsZWN0dXJlIGxpY2Vuc2UgZ29vc2UgZmV2ZXIgZGVmeSBwYXRpZW50IHNpYmxpbmcgcXVhbGl0eSBzaWNrIGNhYmluIGluZG9vciBwcmludCB0eXBpY2FsCg==
+      - VALIDATOR_PRIV_KEY=eyJhZGRyZXNzIjogIjYzMUY3NkNGRjI3QkI0NkNBMERCQTAzODA3M0Y3QjcxNDU5NTQ5OTMiLCJwdWJfa2V5IjogeyJ0eXBlIjogInRlbmRlcm1pbnQvUHViS2V5RWQyNTUxOSIsInZhbHVlIjogIm5ZOWlIUGRGcXBLaGhaSVdIK3ZwcnphUGhaa253bEIzMjFsY2J0VnZBL2M9In0sInByaXZfa2V5IjogeyJ0eXBlIjogInRlbmRlcm1pbnQvUHJpdktleUVkMjU1MTkiLCJ2YWx1ZSI6ICJXVVhYQzR3M0ZuQWE1SGxEU2tUNVFDam1HeENEN1grWm9mSi9CODRydUlPZGoySWM5MFdxa3FHRmtoWWY2K212Tm8rRm1TZkNVSGZiV1Z4dTFXOEQ5dz09In19Cg==
       - GENESIS_URL=https://raw.githubusercontent.com/noislabs/testnets/main/nois-testnet-000/genesis.json
       - REMOTE_RPC_NODE=http://kuq08eb6bda3151gmrln3prccg.ingress.europlots.com:80
       - PERSISTENT_PEERS=7ddf3c60f9ed086eee142ffae23c490d9fc738ca@provider.europlots.com:32637
@@ -51,4 +52,3 @@ deployment:
     dcloud:
       profile: node
       count: 1
-
