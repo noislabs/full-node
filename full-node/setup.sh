@@ -6,7 +6,6 @@ BINARY_NAME=noisd
 BECH32_PREFIX=nois
 WASMD_VERSION=0.28.0
 WASMD_TAG="v$WASMD_VERSION"
-export BINARY_NAME
 
 
 if [ ! -d "wasmd" ] 
