@@ -97,5 +97,5 @@ elif [ "$EXEC_MODE" = "validator" ]; then
   ./$BINARY_NAME tendermint unsafe-reset-all
 	./$BINARY_NAME start
 else
-	echo "Wrong command. Usage: ./$0 [genesis/secondary]"
+	echo "Wrong command. Usage: ./$0 [genesis/validator]"
 fi
