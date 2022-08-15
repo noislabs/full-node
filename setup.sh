@@ -3,10 +3,13 @@
 set -ue
 
 BINARY_NAME=noisd
+BECH32_PREFIX=nois
+WASMD_VERSION=0.28.0
+WASMD_TAG="v$WASMD_VERSION"
 
 git clone https://github.com/CosmWasm/wasmd.git
 cd wasmd
-git checkout "${WASMD_VERSION}"
+git checkout "${WASMD_TAG}"
 WASMD_COMMIT_HASH=$(git rev-parse HEAD)
 mkdir build
 go build \
@@ -19,4 +22,3 @@ go build \
     -X github.com/CosmWasm/wasmd/app.Bech32Prefix=${BECH32_PREFIX} \
     -X 'github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger'" \
     -trimpath ./cmd/wasmd
-find .. -type f -name 'libwasm*.so' -exec cp {} build \;
