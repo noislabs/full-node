@@ -1,0 +1,50 @@
+---
+version: "2.0"
+
+services:
+  node:
+    #Image built from cosmjs repo. No changes have been made to it except built tage and push to Noislabs
+    image: noislabs/faucet:v0.8.1
+    args:
+      - 'start'
+      - 'http://e63vovs34hcll6cre51t8pns0s.ingress.d3akash.cloud:80'
+    env:
+      - FAUCET_TOKENS=unois,ustake
+      - FAUCET_ADDRESS_PREFIX=nois
+      - FAUCET_GAS_PRICE=1000unois
+      - FAUCET_MNEMONIC=save hub more raccoon divorce lucky waste repair tiny host gossip strike case stock warrior blade foam finger barely great curve stay mother doll
+      
+    expose:
+      - port: 8000
+        as: 80
+        to:
+          - global: true
+
+profiles:
+  compute:
+    node:
+      resources:
+        cpu:
+          units: 1
+        memory:
+          size: 2Gi
+        storage:
+          size: 2Gi
+  placement:
+    dcloud:
+      attributes:
+        host: akash
+      signedBy:
+        anyOf:
+          - akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63
+      pricing:
+        node:
+          denom: uakt
+          amount: 1000
+
+deployment:
+  node:
+    dcloud:
+      profile: node
+      count: 1
+
