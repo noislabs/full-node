@@ -18,5 +18,5 @@ RUN apt-get update && apt-get install -y \
  && rm -rf /var/lib/apt/lists/*
 COPY --from=go_builder /go/wasmd/build/$BINARY_NAME /root/$BINARY_NAME
 COPY --from=go_builder /go/wasmd/build/libwasmvm*.so /root
-COPY entrypoint.sh .
-ENTRYPOINT ["./entrypoint.sh"]
+COPY startup.sh .
+ENTRYPOINT ["./startup.sh"]
