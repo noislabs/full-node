@@ -37,3 +37,17 @@ And test it
 ```
 $ docker run -e EXEC_MODE=genesis noislabs/nois:manual
 ```
+
+### Install binary directly on host and run it
+
+go to local_dev
+
+```
+$ cd local_dev 
+```
+
+And execute setup.sh
+
+```
+$ ./setup.sh
+```
