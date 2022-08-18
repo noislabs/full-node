@@ -7,7 +7,7 @@ Build the noisd binary and a noisd container.
 To build noisd, run
 
 ```
-$ ./setup.sh
+$ cd full-node && ./setup.sh
 ```
 
 and test the resulting binary
@@ -36,4 +36,18 @@ And test it
 
 ```
 $ docker run -e EXEC_MODE=genesis noislabs/nois:manual
+```
+
+### Install binary directly on host and run it
+
+go to local_dev
+
+```
+$ cd local_dev 
+```
+
+And execute setup.sh
+
+```
+$ ./setup.sh
 ```
