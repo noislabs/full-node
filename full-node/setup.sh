@@ -7,8 +7,8 @@ BECH32_PREFIX=nois
 WASMD_VERSION=0.28.0
 WASMD_TAG="v$WASMD_VERSION"
 
-rm -rf tmp || true
-mkdir tmp
+# Re-create tmp directory
+rm -rf tmp && mkdir tmp
 
 (
   cd tmp
