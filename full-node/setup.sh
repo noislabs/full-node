@@ -12,10 +12,9 @@ rm -rf tmp && mkdir tmp
 
 (
   cd tmp
-  git clone https://github.com/CosmWasm/wasmd.git
+  git clone --depth 1 --branch "${WASMD_TAG}" https://github.com/CosmWasm/wasmd.git
   (
     cd wasmd
-    git checkout "${WASMD_TAG}"
     WASMD_COMMIT_HASH=$(git rev-parse HEAD)
     mkdir build
     go build \
