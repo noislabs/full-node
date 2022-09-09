@@ -1,0 +1,5 @@
+# Temporary build results
+tmp/
+
+# Output folder for binary and libs
+out/
