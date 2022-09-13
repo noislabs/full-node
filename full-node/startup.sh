@@ -4,7 +4,7 @@ set -ex
 
 
 
-ROOT_DIR="${ROOT_DIR:=/root}"
+ROOT_DIR="${ROOT_DIR:=$HOME}"
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOT_DIR
 PASSPHRASE="${PASSPHRASE:=passphrase}"
 BINARY_NAME="${BINARY_NAME:=noisd}"
@@ -13,7 +13,7 @@ MONIKER="${MONIKER:=nois-validator}"
 HOME_DIR="${HOME_DIR:=$ROOT_DIR/.$BINARY_NAME}"
 CONFIG_DIR="${CONFIG_DIR:=$HOME_DIR/config}"
 DENOM="${DENOM:=nois}"
-STAKE_DENOM="${STAKE_DENOM:=stake}"
+STAKE_DENOM="${STAKE_DENOM:=nois}"
 EXEC_MODE="${EXEC_MODE:=validator}"
 GENESIS_URL="${GENESIS_URL:=https://raw.githubusercontent.com/noislabs/testnets/main/nois-testnet-000/genesis.json}"
 MNEMONIC="${MNEMONIC:=cmV2ZWFsIGNvbWUgcmlkZSBmb3J0dW5lIGFkbWl0IGJyb2tlbiBjbGljayB0b3dlciBhZGRyZXNzIGNlbnN1cyByYWRpbyBsZWN0dXJlIGxpY2Vuc2UgZ29vc2UgZmV2ZXIgZGVmeSBwYXRpZW50IHNpYmxpbmcgcXVhbGl0eSBzaWNrIGNhYmluIGluZG9vciBwcmludCB0eXBpY2FsCg==}"
@@ -37,7 +37,16 @@ if [ "$EXEC_MODE" = "genesis" ]; then
     sed -i '0,/enable = false/s//enable = true/g' $CONFIG_DIR/app.toml
     sed -i 's/cors_allowed_origins = \[\]/cors_allowed_origins = \["*"\]/' $CONFIG_DIR/config.toml
     sed -i 's/create_empty_blocks = true/create_empty_blocks = false/' $CONFIG_DIR/config.toml
+    sed -i 's/swagger = false/swagger = true/' $CONFIG_DIR/app.toml
     sed -i 's/laddr = "tcp:\/\/127.0.0.1:26657"/laddr = "tcp:\/\/0.0.0.0:26657"/' $CONFIG_DIR/config.toml
+    sed -i 's/^cors_allowed_origins =.*$/cors_allowed_origins = ["*"]/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_propose =.*$/timeout_propose = "300ms"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_propose_delta =.*$/timeout_propose_delta = "100ms"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_prevote =.*$/timeout_prevote = "300ms"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_prevote_delta =.*$/timeout_prevote_delta = "100ms"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_precommit =.*$/timeout_precommit = "300ms"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_precommit_delta =.*$/timeout_precommit_delta = "100ms"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_commit =.*$/timeout_commit = "1s"/' $CONFIG_DIR/config.toml
 
 #    create accounts
     yes "${PASSPHRASE}" | $BINARY_NAME keys add node_admin 2>&1 >/dev/null | tail -n 1 > $HOME_DIR/mnemonic
@@ -49,8 +58,8 @@ if [ "$EXEC_MODE" = "genesis" ]; then
 #    add genesis accounts with some initial tokens
     GENESIS_ADDRESS=$(yes "${PASSPHRASE}" | $BINARY_NAME keys show node_admin -a)
     SECONDARY_ADDRESS=$(yes "${PASSPHRASE}" | $BINARY_NAME keys show secondary -a)
-    yes "${PASSPHRASE}" | $BINARY_NAME add-genesis-account node_admin 1000000000000000u"${DENOM}",1000000000000000u"${STAKE_DENOM}"
-    yes "${PASSPHRASE}" | $BINARY_NAME add-genesis-account secondary  1000000000000000u"${DENOM}",1000000000000000u"${STAKE_DENOM}"
+    yes "${PASSPHRASE}" | $BINARY_NAME add-genesis-account node_admin 1000000000000000u"${STAKE_DENOM}"
+    yes "${PASSPHRASE}" | $BINARY_NAME add-genesis-account secondary  1000000000000000u"${STAKE_DENOM}"
 
     yes "${PASSPHRASE}" | $BINARY_NAME gentx node_admin 1000000000u"${STAKE_DENOM}" --chain-id $CHAIN_ID 2> /dev/null
     $BINARY_NAME collect-gentxs 2> /dev/null
@@ -60,7 +69,7 @@ if [ "$EXEC_MODE" = "genesis" ]; then
     echo "Validator already initialized, starting with the existing configuration."
     echo "If you want to re-init the validator, destroy the existing container"
 	fi
-	$BINARY_NAME start
+	#$BINARY_NAME start
 elif [ "$EXEC_MODE" = "validator" ]; then
   if [ ! -f "$CONFIG_DIR/genesis.json" ]; then
     $BINARY_NAME init $MONIKER --chain-id $CHAIN_ID 2> /dev/null
