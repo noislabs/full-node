@@ -69,7 +69,7 @@ if [ "$EXEC_MODE" = "genesis" ]; then
     echo "Validator already initialized, starting with the existing configuration."
     echo "If you want to re-init the validator, destroy the existing container"
 	fi
-	#$BINARY_NAME start
+	$BINARY_NAME start
 elif [ "$EXEC_MODE" = "validator" ]; then
   if [ ! -f "$CONFIG_DIR/genesis.json" ]; then
     $BINARY_NAME init $MONIKER --chain-id $CHAIN_ID 2> /dev/null
