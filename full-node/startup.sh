@@ -23,6 +23,12 @@ PERSISTENT_PEERS="${PERSISTENT_PEERS:=7ddf3c60f9ed086eee142ffae23c490d9fc738ca@r
 COMMISSION_RATE="${COMMISSION_RATE:=0.01}"
 
 
+#Better for TESTNET to make it less strict on validators
+DOWNTIME_JAIL_DURATION=60s
+SLASHING_SIGNED_BLOCKS_WINDOW=300000 #3 days for 1s block time
+SLASHING_MIN_SIGNED_PER_WINDOW=0.100000000000000000
+
+
 
 
 PATH=$ROOT_DIR:$PATH
@@ -35,6 +41,9 @@ if [ "$EXEC_MODE" = "genesis" ]; then
     $BINARY_NAME init $MONIKER --chain-id $CHAIN_ID 2> /dev/null
     # staking/governance token is hardcoded in config, change this
     sed -i "s/\"stake\"/\"u${STAKE_DENOM}\"/" $CONFIG_DIR/genesis.json
+    sed -i "s/\"signed_blocks_window\": \".*$/\"signed_blocks_window\": \"${SLASHING_SIGNED_BLOCKS_WINDOW}\",/" $CONFIG_DIR/genesis.json
+    sed -i "s/\"downtime_jail_duration\": \".*$/\"downtime_jail_duration\": \"${DOWNTIME_JAIL_DURATION}\",/" $CONFIG_DIR/genesis.json
+    sed -i "s/\"min_signed_per_window\": \".*$/\"min_signed_per_window\": \"${SLASHING_MIN_SIGNED_PER_WINDOW}\",/" $CONFIG_DIR/genesis.json
     sed -i 's/minimum-gas-prices = ""/minimum-gas-prices = "0.025u'"${DENOM}"'"/' $CONFIG_DIR/app.toml
     sed -i '0,/enable = false/s//enable = true/g' $CONFIG_DIR/app.toml
     sed -i 's/cors_allowed_origins = \[\]/cors_allowed_origins = \["*"\]/' $CONFIG_DIR/config.toml
