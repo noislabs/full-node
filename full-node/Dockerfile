@@ -14,7 +14,7 @@ FROM ubuntu:20.04
 ENV LD_LIBRARY_PATH=/root
 ENV PATH=$PATH:/root
 RUN apt-get update && apt-get install -y \
-    curl \
+    curl jq vim\
  && rm -rf /var/lib/apt/lists/*
 COPY --from=go_builder /go/out/$BINARY_NAME /root/$BINARY_NAME
 COPY --from=go_builder /go/out/libwasmvm*.so /root
