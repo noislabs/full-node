@@ -93,7 +93,7 @@ elif [ "$EXEC_MODE" = "validator" ]; then
     sed -i 's/seeds = ""/seeds = "'"${PERSISTENT_PEERS}"'"/' $CONFIG_DIR/config.toml
     sed -i 's/minimum-gas-prices = ""/minimum-gas-prices = "0.025u'"${DENOM}"'"/' $CONFIG_DIR/app.toml
     sed -i '0,/enable = false/s//enable = true/g' $CONFIG_DIR/app.toml
-    sed -i '0,/swagger = false/s//swagger = false/g' $CONFIG_DIR/app.toml
+    sed -i '0,/swagger = false/s//swagger = true/g' $CONFIG_DIR/app.toml
     sed -i 's/cors_allowed_origins = \[\]/cors_allowed_origins = \["*"\]/' $CONFIG_DIR/config.toml
     sed -i 's/create_empty_blocks = true/create_empty_blocks = false/' $CONFIG_DIR/config.toml
     sed -i 's/laddr = "tcp:\/\/127.0.0.1:26657"/laddr = "tcp:\/\/0.0.0.0:26657"/' $CONFIG_DIR/config.toml
