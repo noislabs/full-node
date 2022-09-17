@@ -43,7 +43,7 @@ if [ "$EXEC_MODE" = "genesis" ]; then
     sed -i "s/\"signed_blocks_window\": \".*$/\"signed_blocks_window\": \"${SLASHING_SIGNED_BLOCKS_WINDOW}\",/" $CONFIG_DIR/genesis.json
     sed -i "s/\"downtime_jail_duration\": \".*$/\"downtime_jail_duration\": \"${DOWNTIME_JAIL_DURATION}\",/" $CONFIG_DIR/genesis.json
     sed -i "s/\"min_signed_per_window\": \".*$/\"min_signed_per_window\": \"${SLASHING_MIN_SIGNED_PER_WINDOW}\",/" $CONFIG_DIR/genesis.json
-    sed -i 's/minimum-gas-prices = ""/minimum-gas-prices = "0.025u'"${DENOM}"'"/' $CONFIG_DIR/app.toml
+    sed -i 's/minimum-gas-prices = ""/minimum-gas-prices = "0.05u'"${DENOM}"'"/' $CONFIG_DIR/app.toml
     sed -i '0,/enable = false/s//enable = true/g' $CONFIG_DIR/app.toml
     sed -i 's/cors_allowed_origins = \[\]/cors_allowed_origins = \["*"\]/' $CONFIG_DIR/config.toml
     sed -i 's/swagger = false/swagger = true/' $CONFIG_DIR/app.toml
