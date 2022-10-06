@@ -17,6 +17,6 @@ RUN apt-get update && apt-get install -y \
     curl jq vim\
  && rm -rf /var/lib/apt/lists/*
 COPY --from=go_builder /go/out/$BINARY_NAME /root/$BINARY_NAME
-COPY --from=go_builder /go/out/libwasmvm*.so /root
+COPY --from=go_builder /go/out/libwasmvm*.so /root/
 COPY startup.sh .
 ENTRYPOINT ["./startup.sh"]

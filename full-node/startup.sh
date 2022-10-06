@@ -18,14 +18,13 @@ EXEC_MODE="${EXEC_MODE:=validator}"
 GENESIS_URL="${GENESIS_URL:=https://raw.githubusercontent.com/noislabs/testnets/testnet-001/nois-testnet-001/genesis.json}"
                             
 MNEMONIC="${MNEMONIC:=cmV2ZWFsIGNvbWUgcmlkZSBmb3J0dW5lIGFkbWl0IGJyb2tlbiBjbGljayB0b3dlciBhZGRyZXNzIGNlbnN1cyByYWRpbyBsZWN0dXJlIGxpY2Vuc2UgZ29vc2UgZmV2ZXIgZGVmeSBwYXRpZW50IHNpYmxpbmcgcXVhbGl0eSBzaWNrIGNhYmluIGluZG9vciBwcmludCB0eXBpY2FsCg==}"
-#REMOTE_RPC_NODE="${REMOE_RPC_NODE:=http://rpc-11.noislabs.com:80}"
-#PERSISTENT_PEERS="${PERSISTENT_PEERS:=7ddf3c60f9ed086eee142ffae23c490d9fc738ca@rpc-1.noislabs.com:32637}"
 
 
-#Better for TESTNET to make it less strict on validators
-DOWNTIME_JAIL_DURATION=60s
-SLASHING_SIGNED_BLOCKS_WINDOW=300000 #3 days for 1s block time
-SLASHING_MIN_SIGNED_PER_WINDOW=0.100000000000000000
+
+UNBONDING_TIME=86400
+MAX_VALIDATORS=40
+MAX_GAS=3000000
+
 
 
 
@@ -40,23 +39,22 @@ if [ "$EXEC_MODE" = "genesis" ]; then
     $BINARY_NAME init $MONIKER --chain-id $CHAIN_ID 2> /dev/null
     # staking/governance token is hardcoded in config, change this
     sed -i "s/\"stake\"/\"u${STAKE_DENOM}\"/" $CONFIG_DIR/genesis.json
-    sed -i "s/\"signed_blocks_window\": \".*$/\"signed_blocks_window\": \"${SLASHING_SIGNED_BLOCKS_WINDOW}\",/" $CONFIG_DIR/genesis.json
-    sed -i "s/\"downtime_jail_duration\": \".*$/\"downtime_jail_duration\": \"${DOWNTIME_JAIL_DURATION}\",/" $CONFIG_DIR/genesis.json
-    sed -i "s/\"min_signed_per_window\": \".*$/\"min_signed_per_window\": \"${SLASHING_MIN_SIGNED_PER_WINDOW}\",/" $CONFIG_DIR/genesis.json
-    sed -i 's/minimum-gas-prices = ""/minimum-gas-prices = "0.025u'"${DENOM}"'"/' $CONFIG_DIR/app.toml
+    sed -i "s/\"max_gas\": \".*$/\"max_gas\": \"${MAX_GAS}\",/" $CONFIG_DIR/genesis.json
+    sed -i "s/\"max_validators\": .*$/\"max_validators\": ${MAX_VALIDATORS},/" $CONFIG_DIR/genesis.json
+    sed -i "s/\"unbonding_time\": \".*$/\"unbonding_time\": \"${UNBONDING_TIME}s\",/" $CONFIG_DIR/genesis.json
+    sed -i 's/minimum-gas-prices = ""/minimum-gas-prices = "0.05u'"${DENOM}"'"/' $CONFIG_DIR/app.toml
     sed -i '0,/enable = false/s//enable = true/g' $CONFIG_DIR/app.toml
     sed -i 's/cors_allowed_origins = \[\]/cors_allowed_origins = \["*"\]/' $CONFIG_DIR/config.toml
-    sed -i 's/create_empty_blocks = true/create_empty_blocks = false/' $CONFIG_DIR/config.toml
     sed -i 's/swagger = false/swagger = true/' $CONFIG_DIR/app.toml
     sed -i 's/laddr = "tcp:\/\/127.0.0.1:26657"/laddr = "tcp:\/\/0.0.0.0:26657"/' $CONFIG_DIR/config.toml
     sed -i 's/^cors_allowed_origins =.*$/cors_allowed_origins = ["*"]/' $CONFIG_DIR/config.toml
-    sed -i 's/^timeout_propose =.*$/timeout_propose = "300ms"/' $CONFIG_DIR/config.toml
-    sed -i 's/^timeout_propose_delta =.*$/timeout_propose_delta = "100ms"/' $CONFIG_DIR/config.toml
-    sed -i 's/^timeout_prevote =.*$/timeout_prevote = "300ms"/' $CONFIG_DIR/config.toml
-    sed -i 's/^timeout_prevote_delta =.*$/timeout_prevote_delta = "100ms"/' $CONFIG_DIR/config.toml
-    sed -i 's/^timeout_precommit =.*$/timeout_precommit = "300ms"/' $CONFIG_DIR/config.toml
-    sed -i 's/^timeout_precommit_delta =.*$/timeout_precommit_delta = "100ms"/' $CONFIG_DIR/config.toml
-    sed -i 's/^timeout_commit =.*$/timeout_commit = "1s"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_propose =.*$/timeout_propose = "1s"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_propose_delta =.*$/timeout_propose_delta = "200ms"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_prevote =.*$/timeout_prevote = "500ms"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_prevote_delta =.*$/timeout_prevote_delta = "200ms"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_precommit =.*$/timeout_precommit = "1s"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_precommit_delta =.*$/timeout_precommit_delta = "200ms"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_commit =.*$/timeout_commit = "2s"/' $CONFIG_DIR/config.toml
     sed -i 's/^snapshot-interval =.*$/snapshot-interval = 100/' $CONFIG_DIR/app.toml
 
 #    create accounts
@@ -69,10 +67,10 @@ if [ "$EXEC_MODE" = "genesis" ]; then
 #    add genesis accounts with some initial tokens
     GENESIS_ADDRESS=$(yes "${PASSPHRASE}" | $BINARY_NAME keys show node_admin -a)
     SECONDARY_ADDRESS=$(yes "${PASSPHRASE}" | $BINARY_NAME keys show secondary -a)
-    yes "${PASSPHRASE}" | $BINARY_NAME add-genesis-account node_admin 1000000000000000u"${STAKE_DENOM}"
-    yes "${PASSPHRASE}" | $BINARY_NAME add-genesis-account secondary  1000000000000000u"${STAKE_DENOM}"
+    yes "${PASSPHRASE}" | $BINARY_NAME add-genesis-account node_admin 50000000000000u"${STAKE_DENOM}"
+    yes "${PASSPHRASE}" | $BINARY_NAME add-genesis-account secondary  50000000000000u"${STAKE_DENOM}"
 
-    yes "${PASSPHRASE}" | $BINARY_NAME gentx node_admin 1000000000u"${STAKE_DENOM}" --chain-id $CHAIN_ID 2> /dev/null
+    yes "${PASSPHRASE}" | $BINARY_NAME gentx node_admin 500000000000u"${STAKE_DENOM}" --chain-id $CHAIN_ID 2> /dev/null
     $BINARY_NAME collect-gentxs 2> /dev/null
     $BINARY_NAME validate-genesis > /dev/null
     cp $HOME_DIR/config/genesis.json $HOME_DIR/genesis_volume/genesis.json
@@ -103,7 +101,7 @@ elif [ "$EXEC_MODE" = "validator" ]; then
     sed -i 's/^timeout_prevote_delta =.*$/timeout_prevote_delta = "100ms"/' $CONFIG_DIR/config.toml
     sed -i 's/^timeout_precommit =.*$/timeout_precommit = "300ms"/' $CONFIG_DIR/config.toml
     sed -i 's/^timeout_precommit_delta =.*$/timeout_precommit_delta = "100ms"/' $CONFIG_DIR/config.toml
-    sed -i 's/^timeout_commit =.*$/timeout_commit = "1s"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_commit =.*$/timeout_commit = "3s"/' $CONFIG_DIR/config.toml
     sed -i 's/^snapshot-interval =.*$/snapshot-interval = 1000/' $CONFIG_DIR/app.toml
 
 #    import mnemonic generated by the genesis validator (have a local copy for ease of use)
