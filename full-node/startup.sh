@@ -54,7 +54,7 @@ if [ "$EXEC_MODE" = "genesis" ]; then
     sed -i 's/^timeout_prevote_delta =.*$/timeout_prevote_delta = "200ms"/' $CONFIG_DIR/config.toml
     sed -i 's/^timeout_precommit =.*$/timeout_precommit = "1s"/' $CONFIG_DIR/config.toml
     sed -i 's/^timeout_precommit_delta =.*$/timeout_precommit_delta = "200ms"/' $CONFIG_DIR/config.toml
-    sed -i 's/^timeout_commit =.*$/timeout_commit = "2s"/' $CONFIG_DIR/config.toml
+    sed -i 's/^timeout_commit =.*$/timeout_commit = "3s"/' $CONFIG_DIR/config.toml
     sed -i 's/^snapshot-interval =.*$/snapshot-interval = 100/' $CONFIG_DIR/app.toml
 
 #    create accounts
