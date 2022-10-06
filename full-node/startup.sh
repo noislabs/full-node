@@ -12,8 +12,7 @@ CHAIN_ID="${CHAIN_ID:=nois-testnet-001}"
 MONIKER="${MONIKER:=nois-validator}"
 HOME_DIR="${HOME_DIR:=$ROOT_DIR/.$BINARY_NAME}"
 CONFIG_DIR="${CONFIG_DIR:=$HOME_DIR/config}"
-DENOM="${DENOM:=nois}"
-STAKE_DENOM="${STAKE_DENOM:=nois}"
+DENOM="${DENOM:=unois}"
 EXEC_MODE="${EXEC_MODE:=validator}"
 GENESIS_URL="${GENESIS_URL:=https://raw.githubusercontent.com/noislabs/testnets/testnet-001/nois-testnet-001/genesis.json}"
                             
@@ -38,11 +37,11 @@ if [ "$EXEC_MODE" = "genesis" ]; then
 
     $BINARY_NAME init $MONIKER --chain-id $CHAIN_ID 2> /dev/null
     # staking/governance token is hardcoded in config, change this
-    sed -i "s/\"stake\"/\"u${STAKE_DENOM}\"/" $CONFIG_DIR/genesis.json
+    sed -i "s/\"stake\"/\"${DENOM}\"/" $CONFIG_DIR/genesis.json
     sed -i "s/\"max_gas\": \".*$/\"max_gas\": \"${MAX_GAS}\",/" $CONFIG_DIR/genesis.json
     sed -i "s/\"max_validators\": .*$/\"max_validators\": ${MAX_VALIDATORS},/" $CONFIG_DIR/genesis.json
     sed -i "s/\"unbonding_time\": \".*$/\"unbonding_time\": \"${UNBONDING_TIME}s\",/" $CONFIG_DIR/genesis.json
-    sed -i 's/minimum-gas-prices = ""/minimum-gas-prices = "0.05u'"${DENOM}"'"/' $CONFIG_DIR/app.toml
+    sed -i 's/minimum-gas-prices = ""/minimum-gas-prices = "0.05'"${DENOM}"'"/' $CONFIG_DIR/app.toml
     sed -i '0,/enable = false/s//enable = true/g' $CONFIG_DIR/app.toml
     sed -i 's/cors_allowed_origins = \[\]/cors_allowed_origins = \["*"\]/' $CONFIG_DIR/config.toml
     sed -i 's/swagger = false/swagger = true/' $CONFIG_DIR/app.toml
@@ -67,10 +66,10 @@ if [ "$EXEC_MODE" = "genesis" ]; then
 #    add genesis accounts with some initial tokens
     GENESIS_ADDRESS=$(yes "${PASSPHRASE}" | $BINARY_NAME keys show node_admin -a)
     SECONDARY_ADDRESS=$(yes "${PASSPHRASE}" | $BINARY_NAME keys show secondary -a)
-    yes "${PASSPHRASE}" | $BINARY_NAME add-genesis-account node_admin 50000000000000u"${STAKE_DENOM}"
-    yes "${PASSPHRASE}" | $BINARY_NAME add-genesis-account secondary  50000000000000u"${STAKE_DENOM}"
+    yes "${PASSPHRASE}" | $BINARY_NAME add-genesis-account node_admin 50000000000000"${DENOM}"
+    yes "${PASSPHRASE}" | $BINARY_NAME add-genesis-account secondary  50000000000000"${DENOM}"
 
-    yes "${PASSPHRASE}" | $BINARY_NAME gentx node_admin 500000000000u"${STAKE_DENOM}" --chain-id $CHAIN_ID 2> /dev/null
+    yes "${PASSPHRASE}" | $BINARY_NAME gentx node_admin 500000000000"${DENOM}" --chain-id $CHAIN_ID 2> /dev/null
     $BINARY_NAME collect-gentxs 2> /dev/null
     $BINARY_NAME validate-genesis > /dev/null
     cp $HOME_DIR/config/genesis.json $HOME_DIR/genesis_volume/genesis.json
@@ -89,7 +88,7 @@ elif [ "$EXEC_MODE" = "validator" ]; then
 
     sed -i 's/persistent_peers = ""/persistent_peers = "'"${PERSISTENT_PEERS}"'"/' $CONFIG_DIR/config.toml
     sed -i 's/seeds = ""/seeds = "'"${PERSISTENT_PEERS}"'"/' $CONFIG_DIR/config.toml
-    sed -i 's/minimum-gas-prices = ""/minimum-gas-prices = "0.025u'"${DENOM}"'"/' $CONFIG_DIR/app.toml
+    sed -i 's/minimum-gas-prices = ""/minimum-gas-prices = "0.025'"${DENOM}"'"/' $CONFIG_DIR/app.toml
     sed -i '0,/enable = false/s//enable = true/g' $CONFIG_DIR/app.toml
     sed -i '0,/swagger = false/s//swagger = true/g' $CONFIG_DIR/app.toml
     sed -i 's/cors_allowed_origins = \[\]/cors_allowed_origins = \["*"\]/' $CONFIG_DIR/config.toml
@@ -108,16 +107,6 @@ elif [ "$EXEC_MODE" = "validator" ]; then
     echo $MNEMONIC | base64 -d > $HOME_DIR/mnemonic
      { cat $HOME_DIR/mnemonic; echo "${PASSPHRASE}"; echo "${PASSPHRASE}"; } | $BINARY_NAME keys add validator --recover #> /dev/null
     #$BINARY_NAME validate-genesis > /dev/null
-
-
-        #if [ -z ${VALIDATOR_PRIV_KEY+x} ]; then 
-        #    echo "Creating validator";
-        #    { echo "${PASSPHRASE}"; sleep 10; yes; sleep 10; } | $BINARY_NAME tx staking create-validator --amount=10000000u"${STAKE_DENOM}" --fees 100000u"${DENOM}" --pubkey="$($BINARY_NAME tendermint show-validator)" --moniker="${MONIKER}" --commission-rate="${COMMISSION_RATE}" --commission-max-rate="0.20" --commission-max-change-rate="0.01" --min-self-delegation="1" --chain-id=$CHAIN_ID --from=validator -b async --node "${REMOTE_RPC_NODE}" > /validator_info
-        #else 
-        #    echo "Importing validator key";  
-        #    echo  $VALIDATOR_PRIV_KEY |base64 -d > $CONFIG_DIR//priv_validator_key.json   
-        #fi
-        #  don't even ask about those sleeps...
         
         
         STATE_SYNC_RPC=$REMOTE_RPC_NODE
