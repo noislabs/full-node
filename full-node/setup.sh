@@ -4,7 +4,7 @@
 
 BINARY_NAME=noisd
 BECH32_PREFIX=nois
-WASMD_VERSION=0.28.0
+WASMD_VERSION=0.29.0-rc2
 WASMD_TAG="v$WASMD_VERSION"
 
 # Re-create tmp directory
