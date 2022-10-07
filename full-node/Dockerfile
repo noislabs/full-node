@@ -2,8 +2,8 @@ FROM golang:buster as go_builder
 ARG BINARY_NAME=noisd
 
 RUN apt update && apt install -y git build-essential
-COPY setup.sh .
-RUN ./setup.sh
+COPY build.sh .
+RUN ./build.sh
 
 # Finds dynamic libraries installed in the Go package management system, like
 #   /go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.0.0/api/libwasmvm.aarch64.so
