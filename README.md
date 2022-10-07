@@ -7,7 +7,7 @@ Build the noisd binary and a noisd container.
 To build noisd, run
 
 ```
-$ cd full-node && ./setup.sh
+$ cd full-node && ./build.sh
 ```
 
 and test the resulting binary

@@ -13,7 +13,7 @@ fi
 
 
 
-. ../full-node/setup.sh
+. ../full-node/build.sh
 cd ..
 #BINARY_NAME=wasmd/build/$BINARY_NAME
 PATH=$PATH:$PWD/wasmd/build/
