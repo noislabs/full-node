@@ -13,11 +13,11 @@ $ cd full-node && ./setup.sh
 and test the resulting binary
 
 ```
-$ ./wasmd/build/noisd version
-0.28.0
+$ ./out/noisd version
+0.29.0-rc2
 
-$ ./wasmd/build/noisd query wasm libwasmvm-version
-1.0.0
+$ ./out/noisd query wasm libwasmvm-version
+1.1.1
 ```
 
 Please note that this binary relies on an rpath value specific to the Go build system. So it can only be used on the machine where it was built. When moving the build result to a different machine, the correct dynamic library needs to be found.
