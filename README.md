@@ -43,7 +43,7 @@ $ docker run -e EXEC_MODE=genesis noislabs/nois:manual
 go to local_dev
 
 ```
-$ cd local_dev 
+$ cd local_dev
 ```
 
 And execute setup.sh
