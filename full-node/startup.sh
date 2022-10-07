@@ -4,7 +4,7 @@ set -ex
 
 
 
-ROOT_DIR="${ROOT_DIR:=/root}"
+ROOT_DIR="${ROOT_DIR:=$HOME}"
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOT_DIR
 PASSPHRASE="${PASSPHRASE:=passphrase}"
 BINARY_NAME="${BINARY_NAME:=noisd}"
