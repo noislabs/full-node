@@ -1,4 +1,4 @@
-# noisd
+# ‼️Starting with nois-testnet-004 launched on March 21st, 2023 we used the noisd binary from [the noisd repo](https://github.com/noislabs/noisd)
 
 Build the noisd binary and a noisd container.
 
